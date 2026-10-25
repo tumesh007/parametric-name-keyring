@@ -16,7 +16,11 @@
    - **The Problem**: Lowercase `i` and `j` in font Chewy have disconnected round dots that print in mid-air unless manually joined. Standard bridges ruin the round silhouette of the dot.
    - **The Solution**: An under-bridge recessed to **40% of the letter height** ($Z \in [0, 0.40 \times h]$). From the top view, the dot appears 100% round and separated. From underneath, it is anchored with 6 to 12 solid plastic layers!
 
-3. **Smart Character-Aware Kerning**:
+3. **Auto Letter Overlap & Manual Fine-Tuning**:
+   - **Auto Continuous Fusion Mode**: Uses exact typographic character boundaries to automatically overlap adjacent letters (`Auto_Overlap_mm = 1.8mm`), ensuring 100% solid, gap-free prints.
+   - **Manual Per-Letter Sliders**: Tune any individual letter pair (`S → h`, `h → i`, etc.) independently whenever you want custom spacing, with an instant 'Reset All to Auto' option.
+
+4. **Smart Character-Aware Kerning**:
    - Built-in width-classification prevents narrow letters (`l`, `i`) from separating and wide letters (`m`, `w`) from overlapping too heavily.
 
 4. **10-Keyring Bambu Lab A1 Mini Batch Plate**:

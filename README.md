@@ -41,16 +41,22 @@ Alternating heights create visual pop and tactile depth:
 - **Loop Eyelet**: $3.0\,\text{mm}$
 - **Helical Twist**: $-5.0^\circ$ continuous z-axis torsion.
 
-### 3. Smart Width-Classification Kerning
+### 3. Smart Typographic Width-Classification & Exact Overlap
 Prevents narrow characters (`i`, `l`) from drifting apart while giving wide characters (`m`, `w`) sufficient breathing room:
 ```openscad
 function char_w(c) = 
-    (c == "m" || c == "w") ? 15.0 :
-    (c == "i" || c == "l") ? 5.2 :
+    (c == "m" || c == "w" || c == "M" || c == "W") ? 15.0 :
+    (c == "i" || c == "l" || c == "I") ? 5.2 :
     (c == "j" || c == "t" || c == "f") ? 7.5 :
     (c >= "A" && c <= "Z") ? 14.0 :
     10.5;
 ```
+
+### 4. Auto Letter Overlap + Manual Per-Letter Fine Tuning
+- **Auto Overlap Arrangement**: In the WebApp and OpenSCAD, adjacent letters are automatically positioned based on their exact typographic bounding box edges:
+  $$x_i = x_{i-1} + (bbox_{i-1}.x2 - bbox_i.x1) - \text{overlap\_mm}$$
+  A master slider (`Auto_Overlap_mm = 1.8mm`) guarantees every letter touches with exact millimeter fusion, creating 100% watertight single-solid STLs.
+- **Manual Per-Letter Controls**: Dynamic pair sliders (e.g. `S → h`, `h → i`, `i → v`) let you fine-tune the exact overlap of any individual letter combination with live 3D preview and a 'Reset All to Auto' button.
 
 ---
 

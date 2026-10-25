@@ -16,7 +16,7 @@
         :root {
             --bg-primary: #121418;
             --bg-secondary: #1a1e24;
-            --bg-panel: rgba(26, 30, 36, 0.95);
+            --bg-panel: rgba(26, 30, 36, 0.96);
             --accent: #f5a623;
             --accent-hover: #ffb845;
             --text-main: #f0f2f5;
@@ -38,7 +38,7 @@
             display: flex;
         }
         #sidebar {
-            width: 380px;
+            width: 390px;
             background: var(--bg-panel);
             border-right: 1px solid var(--border);
             display: flex;
@@ -48,12 +48,12 @@
             backdrop-filter: blur(12px);
         }
         .header {
-            padding: 18px 20px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border);
             background: linear-gradient(180deg, rgba(245, 166, 35, 0.08) 0%, transparent 100%);
         }
         .header h1 {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -61,9 +61,9 @@
             color: #fff;
         }
         .header .subtitle {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
-            margin-top: 4px;
+            margin-top: 3px;
         }
         .badge {
             display: inline-block;
@@ -78,7 +78,7 @@
         .content {
             flex: 1;
             overflow-y: auto;
-            padding: 16px 20px;
+            padding: 14px 18px;
         }
         .content::-webkit-scrollbar {
             width: 6px;
@@ -93,7 +93,7 @@
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: var(--accent);
-            margin: 16px 0 8px 0;
+            margin: 14px 0 8px 0;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -102,7 +102,7 @@
             margin-top: 0;
         }
         .control-group {
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
         label {
             display: flex;
@@ -110,7 +110,7 @@
             font-size: 12px;
             font-weight: 500;
             color: var(--text-main);
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
         label .val-tag {
             color: var(--accent);
@@ -121,8 +121,8 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 10px 12px;
-            font-size: 15px;
+            padding: 8px 12px;
+            font-size: 14px;
             font-weight: 600;
             color: #fff;
             outline: none;
@@ -143,25 +143,25 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             user-select: none;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .checkbox-row input[type="checkbox"] {
             accent-color: var(--accent);
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             cursor: pointer;
         }
         .color-presets {
             display: flex;
             gap: 8px;
-            margin-top: 6px;
+            margin-top: 4px;
         }
         .color-swatch {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
@@ -172,18 +172,18 @@
             border-color: #fff;
         }
         .footer {
-            padding: 16px 20px;
+            padding: 14px 18px;
             border-top: 1px solid var(--border);
             background: var(--bg-secondary);
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 11px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -294,6 +294,36 @@
             margin-bottom: 12px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Manual overlap styling */
+        .manual-card {
+            background: rgba(0,0,0,0.22);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+        }
+        .manual-card summary {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            list-style: none;
+        }
+        .manual-card summary::-webkit-details-marker {
+            display: none;
+        }
+        .manual-slider-row {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 4px;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+        }
     </style>
 </head>
 <body>
@@ -314,14 +344,54 @@
 
         <div class="content">
             <!-- Text Input -->
-            <div class="section-title">✏️ Text & Name</div>
+            <div class="section-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Text & Name
+            </div>
             <div class="control-group">
                 <label for="input-text">Name / Text</label>
                 <input type="text" id="input-text" value="Shivansh" maxlength="16" autocomplete="off" spellcheck="false">
             </div>
 
+            <!-- Letter Spacing & Overlap (Auto + Manual) -->
+            <div class="section-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                Letter Overlap & Spacing
+            </div>
+            
+            <div class="control-group">
+                <label>Auto Overlap (All Letters) <span class="val-tag" id="val-auto-overlap">1.8 mm</span></label>
+                <input type="range" id="input-auto-overlap" min="0.5" max="4.0" step="0.1" value="1.8">
+                <div style="font-size:10px; color:var(--text-muted); margin-top:4px;">
+                    Calculates exact typographic bounding box overlap so adjacent letters fuse into a continuous 3D solid without gaps.
+                </div>
+            </div>
+
+            <!-- Manual Per-Letter Overlap Details/Accordion -->
+            <details class="manual-card" id="manual-overlap-details">
+                <summary>
+                    <span>📐 Manual Per-Letter Overlap</span>
+                    <span style="font-size:10px; color:var(--accent); font-weight:normal;" id="hint-expand">▾ Tune Pairs</span>
+                </summary>
+                
+                <div style="font-size:10px; color:var(--text-muted); margin: 8px 0;">
+                    Drag any pair below to fine-tune its exact overlap distance:
+                </div>
+
+                <div id="manual-sliders-list"></div>
+
+                <div style="margin-top:8px; display:flex; justify-content:flex-end;">
+                    <button type="button" class="btn btn-secondary" id="btn-reset-overlap" style="padding:4px 8px; font-size:11px; width:auto;">
+                        Reset All to Auto
+                    </button>
+                </div>
+            </details>
+
             <!-- Stepped Heights -->
-            <div class="section-title">📐 Stepped 3D Heights</div>
+            <div class="section-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Stepped 3D Heights
+            </div>
             <div class="control-group">
                 <label>Capital Letter Height <span class="val-tag" id="val-cap-h">8.0 mm</span></label>
                 <input type="range" id="input-cap-h" min="5" max="12" step="0.5" value="8">
@@ -336,14 +406,20 @@
             </div>
 
             <!-- Twist Angle -->
-            <div class="section-title">🌪️ Helical Twist</div>
+            <div class="section-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Helical Twist
+            </div>
             <div class="control-group">
                 <label>Twist Angle <span class="val-tag" id="val-twist">-5°</span></label>
                 <input type="range" id="input-twist" min="-10" max="10" step="0.5" value="-5">
             </div>
 
             <!-- Floating Dot Bridge -->
-            <div class="section-title">✨ Floating Dot Bridge ('i' & 'j')</div>
+            <div class="section-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+                Floating Dot Bridge ('i' & 'j')
+            </div>
             <label class="checkbox-row">
                 <input type="checkbox" id="check-bridge" checked>
                 <span>Connect Dots to Stem (Eliminate Mid-Air)</span>
@@ -357,14 +433,20 @@
             </div>
 
             <!-- Eyelet Loop -->
-            <div class="section-title">🔘 Keyring Eyelet Loop</div>
+            <div class="section-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+                Keyring Eyelet Loop
+            </div>
             <label class="checkbox-row">
                 <input type="checkbox" id="check-loop" checked>
                 <span>Include Left Attachment Loop</span>
             </label>
 
             <!-- Material Color & Bed -->
-            <div class="section-title">🎨 Preview Material & Bed</div>
+            <div class="section-title">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Preview Material & Bed
+            </div>
             <div class="control-group">
                 <label>Filament Color</label>
                 <div class="color-presets">
@@ -399,8 +481,8 @@
         <canvas id="canvas3d"></canvas>
 
         <div class="overlay-stats">
-            <div>Dimensions: <b id="stat-dims">85 x 26 x 8.0 mm</b></div>
-            <div>Triangles: <b id="stat-tris">3,420</b></div>
+            <div>Dimensions: <b id="stat-dims">81.1 x 26.0 x 8.0 mm</b></div>
+            <div>Triangles: <b id="stat-tris">4,820</b></div>
             <div class="status-ok">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                 100% Manifold & Slicer Ready
@@ -409,10 +491,10 @@
 
         <div class="nav-links">
             <a href="https://makerworld.com/en/models/961911" target="_blank" class="nav-link-btn">
-                <span>🌐 MakerWorld Model #961911</span>
+                <span>🔗 MakerWorld Model #961911</span>
             </a>
             <a href="https://github.com/tumesh007/parametric-name-keyring" target="_blank" class="nav-link-btn">
-                <span>⭐ GitHub Repository</span>
+                <span>📁 GitHub Repository</span>
             </a>
         </div>
     </div>
@@ -423,6 +505,10 @@
         let chewyFont = null;
         let scene, camera, renderer, controls, keyringGroup, bedGroup;
         let activeColor = 0xe5b81a;
+
+        // Overlap State
+        let autoOverlap = 1.8;
+        let manualOverlaps = {}; // pairIdx -> mm
 
         function init3D() {
             const container = document.getElementById('viewport-container');
@@ -504,26 +590,44 @@
             renderer.render(scene, camera);
         }
 
-        // Kerning & Width Formula (matches OpenSCAD exactly)
-        function charWidth(c) {
-            if (c === 'm' || c === 'w') return 15.0;
-            if (c === 'i' || c === 'l') return 5.2;
-            if (c === 'j' || c === 't' || c === 'f') return 7.5;
-            if (c >= 'A' && c <= 'Z') return 14.0;
-            return 10.5;
-        }
+        // Render dynamic sliders for manual per-letter overlap
+        function renderManualOverlapSliders() {
+            const textStr = document.getElementById('input-text').value.trim() || 'Keyring';
+            const container = document.getElementById('manual-sliders-list');
+            container.innerHTML = '';
 
-        function getStepAt(text, i) {
-            if (i <= 0) return 0;
-            return ((charWidth(text[i - 1]) + charWidth(text[i])) / 2) * 0.95;
-        }
-
-        function getCharX(text, i) {
-            let x = 0;
-            for (let j = 1; j <= i; j++) {
-                x += getStepAt(text, j);
+            if (textStr.length < 2) {
+                container.innerHTML = '<div style="font-size:11px; color:var(--text-muted);">Enter 2 or more letters to tune pair overlaps.</div>';
+                return;
             }
-            return x;
+
+            for (let i = 0; i < textStr.length - 1; i++) {
+                const charA = textStr[i];
+                const charB = textStr[i + 1];
+                const currentVal = (manualOverlaps[i] !== undefined) ? manualOverlaps[i] : autoOverlap;
+
+                const row = document.createElement('div');
+                row.className = 'manual-slider-row';
+                row.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; margin-bottom:3px;">
+                        <span>Pair ${i + 1}: <b style="color:#fff;">'${charA}' &rarr; '${charB}'</b></span>
+                        <span class="val-tag" id="val-pair-${i}">${currentVal.toFixed(1)} mm</span>
+                    </div>
+                    <input type="range" class="input-pair-slider" data-pair="${i}" min="0.0" max="4.5" step="0.1" value="${currentVal}">
+                `;
+                container.appendChild(row);
+            }
+
+            container.querySelectorAll('.input-pair-slider').forEach(slider => {
+                slider.addEventListener('input', (e) => {
+                    const pairIdx = parseInt(e.target.dataset.pair, 10);
+                    const val = parseFloat(e.target.value);
+                    manualOverlaps[pairIdx] = val;
+                    const tag = document.getElementById(`val-pair-${pairIdx}`);
+                    if (tag) tag.innerText = val.toFixed(1) + ' mm';
+                    updateModel();
+                });
+            });
         }
 
         // Generate 3D Keyring Geometry
@@ -552,45 +656,70 @@
                 metalness: 0.3
             });
 
-            const span = getCharX(textStr, textStr.length - 1);
-            const cx = span / 2;
-            const twistRad = (twistDeg * Math.PI) / 180;
             const fontSize = 25;
+            const scale = fontSize / chewyFont.unitsPerEm;
+            const twistRad = (twistDeg * Math.PI) / 180;
 
-            // Generate Letters
+            // 1. Compute true typographic glyph bounding boxes and centers
+            const bboxes = [];
+            const glyphCenters = [];
+            for (let i = 0; i < textStr.length; i++) {
+                const glyph = chewyFont.charToGlyph(textStr[i]);
+                const bb = glyph.getBoundingBox();
+                const bx1 = bb.x1 * scale;
+                const bx2 = bb.x2 * scale;
+                bboxes.push({ x1: bx1, x2: bx2, w: bx2 - bx1 });
+                glyphCenters.push((bx1 + bx2) / 2);
+            }
+
+            // 2. Compute cumulative X positions using per-pair overlap
+            const positions = [0];
+            for (let i = 1; i < textStr.length; i++) {
+                const pairIdx = i - 1;
+                const pairOverlap = (manualOverlaps[pairIdx] !== undefined) ? manualOverlaps[pairIdx] : autoOverlap;
+                const x_i = positions[i - 1] + (bboxes[i - 1].x2 - bboxes[i].x1) - pairOverlap;
+                positions.push(x_i);
+            }
+
+            // 3. Overall bounds and centering
+            const firstLeft = positions[0] + bboxes[0].x1;
+            const lastRight = positions[textStr.length - 1] + bboxes[textStr.length - 1].x2;
+            const loopX = firstLeft - 7.5;
+            const totalMinX = includeLoop ? (loopX - 10) : firstLeft;
+            const totalMaxX = lastRight;
+            const centerX = (totalMinX + totalMaxX) / 2;
+
+            // 4. Generate Letters
             for (let i = 0; i < textStr.length; i++) {
                 const char = textStr[i];
-                const charX = getCharX(textStr, i) - cx;
+                const charCenterX = positions[i] + glyphCenters[i] - centerX;
                 const h = (i === 0) ? capH : ((i % 2 === 0) ? oddH : evenH);
 
-                // OpenType glyph path to Three.js Shape
                 const path = chewyFont.getPath(char, 0, 0, fontSize);
                 const glyphBox = path.getBoundingBox();
-                const glyphCenterX = (glyphBox.x1 + glyphBox.x2) / 2;
-                const glyphCenterY = -7.0; // Centers baseline at Y=0 matching OpenSCAD
+                const localCenterX = (glyphBox.x1 + glyphBox.x2) / 2;
+                const glyphCenterY = -7.0; // Center baseline around Y=0
 
                 const shapePath = new THREE.ShapePath();
-
                 path.commands.forEach(cmd => {
-                    const x = (cmd.x !== undefined) ? (cmd.x - glyphCenterX) : 0;
+                    const x = (cmd.x !== undefined) ? (cmd.x - localCenterX) : 0;
                     const y = (cmd.y !== undefined) ? (-cmd.y + glyphCenterY) : 0;
-                    const x1 = (cmd.x1 !== undefined) ? (cmd.x1 - glyphCenterX) : 0;
+                    const x1 = (cmd.x1 !== undefined) ? (cmd.x1 - localCenterX) : 0;
                     const y1 = (cmd.y1 !== undefined) ? (-cmd.y1 + glyphCenterY) : 0;
-                    const x2 = (cmd.x2 !== undefined) ? (cmd.x2 - glyphCenterX) : 0;
+                    const x2 = (cmd.x2 !== undefined) ? (cmd.x2 - localCenterX) : 0;
                     const y2 = (cmd.y2 !== undefined) ? (-cmd.y2 + glyphCenterY) : 0;
 
                     if (cmd.type === 'M') shapePath.moveTo(x, y);
                     else if (cmd.type === 'L') shapePath.lineTo(x, y);
                     else if (cmd.type === 'Q') shapePath.quadraticCurveTo(x1, y1, x, y);
                     else if (cmd.type === 'C') shapePath.bezierCurveTo(x1, y1, x2, y2, x, y);
-                    // cmd.type === 'Z' handled automatically by shapePath.toShapes()
                 });
 
                 const shapes = shapePath.toShapes(true);
                 shapes.forEach(shape => {
                     const geom = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false, curveSegments: 20 });
                     
-                    // Apply Helical Twist
+                    // Helical Twist around letter's own center
                     const pos = geom.attributes.position;
                     for (let p = 0; p < pos.count; p++) {
                         const vx = pos.getX(p);
@@ -604,7 +733,7 @@
                     geom.computeVertexNormals();
 
                     const mesh = new THREE.Mesh(geom, material);
-                    mesh.position.set(charX, 0, 0);
+                    mesh.position.set(charCenterX, 0, 0);
                     mesh.castShadow = true;
                     mesh.receiveShadow = true;
                     keyringGroup.add(mesh);
@@ -636,29 +765,27 @@
                     }
                     bGeom.computeVertexNormals();
                     const bMesh = new THREE.Mesh(bGeom, material);
-                    bMesh.position.set(charX, 0, 0);
+                    bMesh.position.set(charCenterX, 0, 0);
                     keyringGroup.add(bMesh);
                 }
             }
 
-            // Add Eyelet Loop
+            // 5. Add Eyelet Loop
             if (includeLoop) {
-                const loopX = -cx - 8.5;
                 const loopShape = new THREE.Shape();
                 loopShape.absarc(0, 0, 10, 0, Math.PI * 2, false);
-                const loopHole = new THREE.Path();
-                loopHole.absarc(0, 0, 5, 0, Math.PI * 2, true);
-                loopShape.holes.push(loopHole);
+                const holePath = new THREE.Path();
+                holePath.absarc(0, 0, 4.5, 0, Math.PI * 2, true);
+                loopShape.holes.push(holePath);
 
-                const loopGeom = new THREE.ExtrudeGeometry(loopShape, { depth: 3.0, bevelEnabled: false, curveSegments: 24 });
-                loopGeom.computeVertexNormals();
+                const loopGeom = new THREE.ExtrudeGeometry(loopShape, { depth: 3.2, bevelEnabled: false, curveSegments: 36 });
                 const loopMesh = new THREE.Mesh(loopGeom, loopMaterial);
-                loopMesh.position.set(loopX, 0, 0);
+                loopMesh.position.set(loopX - centerX, 0, 0);
                 loopMesh.castShadow = true;
+                loopMesh.receiveShadow = true;
                 keyringGroup.add(loopMesh);
             }
 
-            // Update stats
             updateStats(textStr);
         }
 
@@ -666,7 +793,6 @@
             const box = new THREE.Box3().setFromObject(keyringGroup);
             const size = new THREE.Vector3();
             box.getSize(size);
-
             document.getElementById('stat-dims').innerText = `${size.x.toFixed(1)} x ${size.y.toFixed(1)} x ${size.z.toFixed(1)} mm`;
 
             let triCount = 0;
@@ -701,15 +827,25 @@
             const connectDots = document.getElementById('check-bridge').checked;
             const bridgePct = document.getElementById('input-bridge-h').value;
 
+            let spacingArr = [0];
+            for (let i = 1; i < textStr.length; i++) {
+                const pairIdx = i - 1;
+                const ov = (manualOverlaps[pairIdx] !== undefined) ? manualOverlaps[pairIdx] : autoOverlap;
+                spacingArr.push(parseFloat(ov.toFixed(2)));
+            }
+
             const code = `// Parametric Name Keyring
 Font_name = "Chewy";
 Text = "${textStr}";
 Rotation = 0;
+Auto_Spacing = true;
+Auto_Overlap_mm = ${autoOverlap};
 Connect_dots = ${connectDots};
 Dot_bridge_height_percent = ${bridgePct};
 twist = ${twistDeg};
 
-// Height levels: Cap=${capH}mm, Even=${evenH}mm, Odd=${oddH}mm
+// Stepped Heights: Cap=${capH}mm, Even=${evenH}mm, Odd=${oddH}mm
+// Manual Pair Overlaps: [${spacingArr.join(', ')}]
 // Generated via 3D Parametric Name Keyring Studio`;
 
             navigator.clipboard.writeText(code).then(() => {
@@ -718,7 +854,37 @@ twist = ${twistDeg};
         }
 
         // Event Listeners
-        document.getElementById('input-text').addEventListener('input', updateModel);
+        document.getElementById('input-text').addEventListener('input', () => {
+            manualOverlaps = {};
+            renderManualOverlapSliders();
+            updateModel();
+        });
+
+        document.getElementById('input-auto-overlap').addEventListener('input', (e) => {
+            autoOverlap = parseFloat(e.target.value);
+            document.getElementById('val-auto-overlap').innerText = autoOverlap.toFixed(1) + ' mm';
+            const textStr = document.getElementById('input-text').value.trim() || 'Keyring';
+            for (let i = 0; i < textStr.length - 1; i++) {
+                manualOverlaps[i] = autoOverlap;
+                const slider = document.querySelector(`.input-pair-slider[data-pair="${i}"]`);
+                if (slider) slider.value = autoOverlap;
+                const tag = document.getElementById(`val-pair-${i}`);
+                if (tag) tag.innerText = autoOverlap.toFixed(1) + ' mm';
+            }
+            updateModel();
+        });
+
+        document.getElementById('btn-reset-overlap').addEventListener('click', () => {
+            manualOverlaps = {};
+            const textStr = document.getElementById('input-text').value.trim() || 'Keyring';
+            for (let i = 0; i < textStr.length - 1; i++) {
+                const slider = document.querySelector(`.input-pair-slider[data-pair="${i}"]`);
+                if (slider) slider.value = autoOverlap;
+                const tag = document.getElementById(`val-pair-${i}`);
+                if (tag) tag.innerText = autoOverlap.toFixed(1) + ' mm';
+            }
+            updateModel();
+        });
         
         ['input-cap-h', 'input-even-h', 'input-odd-h', 'input-twist', 'input-bridge-h'].forEach(id => {
             const el = document.getElementById(id);
@@ -763,6 +929,7 @@ twist = ${twistDeg};
             setTimeout(() => {
                 document.getElementById('loading-overlay').style.display = 'none';
             }, 400);
+            renderManualOverlapSliders();
             updateModel();
         } catch (err) {
             console.error('Failed to parse Chewy font:', err);
