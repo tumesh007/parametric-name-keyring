@@ -432,7 +432,7 @@
                 </div>
             </div>
 
-            <!-- Keyring Eyelet Loop -->
+            <!-- Keyring Eyelet Loop (4 mm Keyhole + Custom X/Y Position) -->
             <div class="section-title">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
                 Keyring Eyelet (4 mm Keyhole)
@@ -441,6 +441,23 @@
                 <input type="checkbox" id="check-loop" checked>
                 <span>Include Left Eyelet (Standard 4.0 mm Hole)</span>
             </label>
+
+            <div id="eyelet-position-controls" style="background:rgba(0,0,0,0.18); border:1px solid var(--border); border-radius:6px; padding:10px 12px; margin-bottom:12px;">
+                <div class="control-group">
+                    <label>Eyelet X Offset (Closer / Further) <span class="val-tag" id="val-loop-x">0.0 mm</span></label>
+                    <input type="range" id="input-loop-x" min="-10" max="10" step="0.5" value="0">
+                    <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">
+                        Fine-tune horizontal fusion into the first letter.
+                    </div>
+                </div>
+                <div class="control-group" style="margin-bottom:0;">
+                    <label>Eyelet Y Offset (Up / Down) <span class="val-tag" id="val-loop-y">0.0 mm</span></label>
+                    <input type="range" id="input-loop-y" min="-12" max="12" step="0.5" value="0">
+                    <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">
+                        Adjust vertical position to match starting letter shape (e.g. T, S, J, P).
+                    </div>
+                </div>
+            </div>
 
             <!-- Material Color & Bed -->
             <div class="section-title">
@@ -491,8 +508,8 @@
         </div>
 
         <div class="nav-links">
-            <a href="https://makerworld.com/en/models/961911" target="_blank" class="nav-link-btn">
-                <span>🔗 MakerWorld Model #961911</span>
+            <a href="https://makerworld.com/en/models/3490868-parametric-custom-name-keyring" target="_blank" class="nav-link-btn">
+                <span>🔗 MakerWorld Model #3490868</span>
             </a>
             <a href="https://github.com/tumesh007/parametric-name-keyring" target="_blank" class="nav-link-btn">
                 <span>📁 GitHub Repository</span>
@@ -645,6 +662,8 @@
             const connectDots = document.getElementById('check-bridge').checked;
             const bridgePct = parseFloat(document.getElementById('input-bridge-h').value);
             const includeLoop = document.getElementById('check-loop').checked;
+            const loopOffsetX = parseFloat(document.getElementById('input-loop-x').value);
+            const loopOffsetY = parseFloat(document.getElementById('input-loop-y').value);
 
             const material = new THREE.MeshStandardMaterial({
                 color: activeColor,
@@ -682,14 +701,16 @@
                 positions.push(x_i);
             }
 
-            // 3. Eyelet Loop Dimensions (Standard 4.0mm Keyhole)
+            // 3. Eyelet Loop Dimensions (Standard 4.0mm Keyhole with customizable X & Y position)
             const loopOuterR = 4.8; // 9.6mm outer diameter, 2.8mm solid perimeter wall
             const keyholeR = 2.0;   // exact 4.0mm keyhole diameter
             const loopH = 3.2;
 
             const firstLeft = positions[0] + bboxes[0].x1;
             const lastRight = positions[textStr.length - 1] + bboxes[textStr.length - 1].x2;
-            const loopX = firstLeft - 5.2; // provides 3.2mm clearance between 4mm hole and letter edge
+            const loopX = firstLeft - 5.2 + loopOffsetX;
+            const loopY = loopOffsetY;
+
             const totalMinX = includeLoop ? (loopX - loopOuterR) : firstLeft;
             const totalMaxX = lastRight;
             const centerX = (totalMinX + totalMaxX) / 2;
@@ -789,16 +810,19 @@
                 }
             }
 
-            // 5. Add Keyring Eyelet with 4mm Keyhole & Tangent Fusion Tab
+            // 5. Add Keyring Eyelet with 4mm Keyhole & Dynamic Tangent Fusion Tab
             if (includeLoop) {
                 const thetaTop = Math.asin(0.7);
                 const thetaBottom = -thetaTop;
 
+                // Ensure tab reach dynamically connects from loopX into first letter
+                const tabReachX = Math.max(loopOuterR + 3.0, (firstLeft - loopX) + 2.5);
+
                 const loopShape = new THREE.Shape();
                 loopShape.moveTo(loopOuterR * Math.cos(thetaTop), loopOuterR * Math.sin(thetaTop));
                 loopShape.absarc(0, 0, loopOuterR, thetaTop, 2 * Math.PI + thetaBottom, false);
-                loopShape.lineTo(loopOuterR + 3.0, -loopOuterR * 0.7);
-                loopShape.lineTo(loopOuterR + 3.0, loopOuterR * 0.7);
+                loopShape.lineTo(tabReachX, -loopOuterR * 0.75);
+                loopShape.lineTo(tabReachX, loopOuterR * 0.75);
                 loopShape.closePath();
 
                 const holePath = new THREE.Path();
@@ -809,7 +833,7 @@
                 loopGeom.computeVertexNormals();
 
                 const loopMesh = new THREE.Mesh(loopGeom, loopMaterial);
-                loopMesh.position.set(loopX - centerX, 0, 0);
+                loopMesh.position.set(loopX - centerX, loopY, 0);
                 loopMesh.castShadow = true;
                 loopMesh.receiveShadow = true;
                 keyringGroup.add(loopMesh);
@@ -855,6 +879,8 @@
             const twistDeg = document.getElementById('input-twist').value;
             const connectDots = document.getElementById('check-bridge').checked;
             const bridgePct = document.getElementById('input-bridge-h').value;
+            const loopX = document.getElementById('input-loop-x').value;
+            const loopY = document.getElementById('input-loop-y').value;
 
             let spacingArr = [0];
             for (let i = 1; i < textStr.length; i++) {
@@ -864,6 +890,7 @@
             }
 
             const code = `// Parametric Name Keyring (Standard 4mm Keyhole + Dot Bridges)
+// Model on MakerWorld: https://makerworld.com/en/models/3490868-parametric-custom-name-keyring
 Font_name = "Chewy";
 Text = "${textStr}";
 Rotation = 0;
@@ -876,6 +903,8 @@ twist = ${twistDeg};
 Keyhole_diameter = 4.0;
 Loop_wall_thickness = 2.8;
 Loop_height = 3.2;
+Loop_x_offset = ${loopX};
+Loop_y_offset = ${loopY};
 
 // Stepped Heights: Cap=${capH}mm, Even=${evenH}mm, Odd=${oddH}mm
 // Manual Pair Overlaps: [${spacingArr.join(', ')}]
@@ -932,11 +961,24 @@ Loop_height = 3.2;
             });
         });
 
+        // Eyelet Position listeners
+        document.getElementById('input-loop-x').addEventListener('input', (e) => {
+            document.getElementById('val-loop-x').innerText = parseFloat(e.target.value).toFixed(1) + ' mm';
+            updateModel();
+        });
+        document.getElementById('input-loop-y').addEventListener('input', (e) => {
+            document.getElementById('val-loop-y').innerText = parseFloat(e.target.value).toFixed(1) + ' mm';
+            updateModel();
+        });
+
         document.getElementById('check-bridge').addEventListener('change', (e) => {
             document.getElementById('bridge-height-group').style.opacity = e.target.checked ? '1' : '0.4';
             updateModel();
         });
-        document.getElementById('check-loop').addEventListener('change', updateModel);
+        document.getElementById('check-loop').addEventListener('change', (e) => {
+            document.getElementById('eyelet-position-controls').style.display = e.target.checked ? 'block' : 'none';
+            updateModel();
+        });
         document.getElementById('check-bed').addEventListener('change', (e) => {
             bedGroup.visible = e.target.checked;
         });

@@ -1,10 +1,10 @@
 /*
    ================================================================================
-   MAKERWORLD PARAMETRIC MODEL MAKER: CUSTOM NAME KEYRING
+   MAKERWORLD PARAMETRIC MODEL MAKER: PARAMETRIC CUSTOM NAME KEYRING
    ================================================================================
-   Model ID: #961911 (Hayden Kong)
-   File Name: CustomNameKeyring.scad / NameKeyringV1.6.scad
-   Stepped Heights + Standard 4mm Keyhole Eyelet + Exact Dot Bridges + Auto/Manual Overlap
+   Model ID: #3490868
+   Model URL: https://makerworld.com/en/models/3490868-parametric-custom-name-keyring
+   Stepped 3D Heights + Standard 4mm Keyhole Eyelet + Exact Dot Bridges + Auto/Manual Overlap
    ================================================================================
 */
 
@@ -39,11 +39,11 @@ Loop_wall_thickness = 2.8; // [2.0:0.2:5.0]
 // Height / thickness of the eyelet tab in mm
 Loop_height = 3.2; // [2.0:0.2:6.0]
 
-// Horizontal fine-tuning adjustment
-Loop_x_offset = 0; // [-10:0.5:10]
+// Horizontal position adjustment (closer/further from letter)
+Loop_x_offset = 0; // [-15:0.5:15]
 
-// Vertical fine-tuning adjustment
-Loop_y_position = 0; // [-10:0.5:10]
+// Vertical position adjustment (up/down to match letter shape)
+Loop_y_offset = 0; // [-15:0.5:15]
 
 /* [Spacing & Overlap Mode] */
 
@@ -131,11 +131,17 @@ loop_outer_r = (Keyhole_diameter / 2) + Loop_wall_thickness;
 first_char_left = -calc_center - (char_w(Text[0]) / 2);
 calc_loop_x = Auto_Spacing ? (first_char_left - loop_outer_r + 2.0) : (-center - 12.0);
 
+loop_x = calc_loop_x + Loop_x_offset;
+loop_y = Loop_y_offset;
+
+// Dynamic tab reach ensuring solid penetration into the first letter
+tab_reach = max(loop_outer_r + 3.0, (first_char_left - loop_x) + 2.5);
+
 rotate([0, 0, Rotation]) {
 
-    // Engineering Keyring Eyelet with 4.0 mm Keyhole
+    // Engineering Keyring Eyelet with 4.0 mm Keyhole & Custom X/Y Offsets
     if (Include_loop) {
-        translate ([calc_loop_x + Loop_x_offset, Loop_y_position, 0]) {
+        translate ([loop_x, loop_y, 0]) {
             linear_extrude(height = Loop_height, $fn = 60) {
                 difference() {
                     union() {
@@ -143,8 +149,8 @@ rotate([0, 0, Rotation]) {
                         // Tangent fusion tab embedding into first letter
                         polygon(points = [
                             [0, loop_outer_r],
-                            [loop_outer_r + 3.5, loop_outer_r * 0.75],
-                            [loop_outer_r + 3.5, -loop_outer_r * 0.75],
+                            [tab_reach, loop_outer_r * 0.75],
+                            [tab_reach, -loop_outer_r * 0.75],
                             [0, -loop_outer_r]
                         ]);
                     }

@@ -1,6 +1,6 @@
 # 🏷️ Parametric Custom Name Keyring (Stepped 3D Heights + Under-Bridge Floating Dot Fix)
 
-> **Based on Hayden Kong's Custom Name Keyring (#961911)**, upgraded with genuine alternating stepped 3D letter heights (+15-20% depth separation), 40% recessed under-bridges for floating dots on `i` & `j`, smart automatic kerning, and a pre-arranged 10-keyring batch plate ready for the **Bambu Lab A1 Mini (180 x 180 mm)**!
+> **Parametric Custom Name Keyring on MakerWorld ([Model #3490868](https://makerworld.com/en/models/3490868-parametric-custom-name-keyring))**, upgraded with alternating stepped 3D letter heights (+15-20% depth separation), 40% recessed under-bridges for floating dots on `i` & `j`, custom X/Y keylet positioning, smart automatic kerning, and a pre-arranged 10-keyring batch plate ready for the **Bambu Lab A1 Mini (180 x 180 mm)**!
 
 ---
 
@@ -12,28 +12,28 @@
    - Odd Letters (3rd, 5th, 7th...): **6.0 mm**
    - Gives high-contrast depth, tactile feel, and eliminates boring flat top surfaces.
 
-2. **Standard 4.0 mm Keyring Eyelet**:
-   - Replaced the old wobbly letter 'o' with a genuine engineering eyelet.
+2. **Standard 4.0 mm Keyring Eyelet + Custom X/Y Positioning**:
    - **4.0 mm Precision Keyhole**: Universally fits split rings, jump rings, ball-chains, and carabiners.
    - **2.8 mm Solid Walls & Tangent Tab**: High tensile strength prevents snapping when pulled on keys.
+   - **Custom Keylet X & Y Positioning**: Move the keylet horizontally closer/further or vertically up/down to seamlessly match the starting contour of any letter (e.g. aligning with the top bar of 'T', center of 'S', curve of 'P', or tail of 'J').
 
 3. **Under-Bridge Floating Dot Fix (for 'i' & 'j')**:
    - **The Problem**: Lowercase `i` and `j` in font Chewy have disconnected round dots that print in mid-air unless manually joined. Standard bridges ruin the round silhouette of the dot.
-   - **The Solution**: An under-bridge recessed to **40% of the letter height** ($Z \in [0, 0.40 \times h]$). From the top view, the dot appears 100% round and separated. From underneath, it is anchored with 6 to 12 solid plastic layers!
+   - **The Solution**: An under-bridge recessed to **40% of the letter height** ($Z \in [0, 0.40 \times h]$). From the top view, the dot appears 100% round and separated. From underneath, it is anchored with 7 to 12 solid plastic layers!
 
-3. **Auto Letter Overlap & Manual Fine-Tuning**:
+4. **Auto Letter Overlap & Manual Fine-Tuning**:
    - **Auto Continuous Fusion Mode**: Uses exact typographic character boundaries to automatically overlap adjacent letters (`Auto_Overlap_mm = 1.8mm`), ensuring 100% solid, gap-free prints.
    - **Manual Per-Letter Sliders**: Tune any individual letter pair (`S → h`, `h → i`, etc.) independently whenever you want custom spacing, with an instant 'Reset All to Auto' option.
 
-4. **Smart Character-Aware Kerning**:
+5. **Smart Character-Aware Kerning**:
    - Built-in width-classification prevents narrow letters (`l`, `i`) from separating and wide letters (`m`, `w`) from overlapping too heavily.
 
-4. **10-Keyring Bambu Lab A1 Mini Batch Plate**:
+6. **10-Keyring Bambu Lab A1 Mini Batch Plate**:
    - Pre-arranged, centered, and scaled ($0.88\times$) on an exact $180 \times 180\,\text{mm}$ build plate with safe $15\,\text{mm}$ edge margins.
 
-5. **Live Interactive 3D WebApp**:
+7. **Live Interactive 3D WebApp**:
    - Don't have OpenSCAD? Open our GitHub WebApp in your browser, type any name, inspect in real-time 3D, and download your STL with 1 click!
-   - 🌐 [https://tumesh007.github.io/parametric-name-keyring/](https://tumesh007.github.io/parametric-name-keyring/)
+   - 🚀 [https://tumesh007.github.io/parametric-name-keyring/](https://tumesh007.github.io/parametric-name-keyring/)
 
 ---
 
@@ -84,20 +84,24 @@ Want multi-color letters like the MakerWorld showcase?
 
 ---
 
-## 🛠️ How to Customize in OpenSCAD
+## 💻 How to Customize in OpenSCAD
 
 1. Open [`CustomNameKeyring.scad`](CustomNameKeyring.scad) in [OpenSCAD](https://openscad.org/).
 2. Change the `Text = "YourName";` parameter.
 3. Adjust sliders:
-   - `letter_X_height`: Customize letter heights.
+   - `Loop_x_offset`: Fine-tune eyelet horizontal fusion into the first letter.
+   - `Loop_y_offset`: Move eyelet vertically to match letter curves (T, S, P, J).
+   - `Auto_Overlap_mm`: Default 1.8mm for solid letter fusion.
    - `Dot_bridge_height_percent`: 40% (recessed) or 100% (flush).
    - `twist`: -5° to +5° for subtle helical flair.
 4. Press `F5` to preview, `F6` to render, and `F7` to export your STL!
 
 ---
 
-## 📜 Attribution
+## 📜 Links & Credits
 
-- Original concept by **Hayden Kong** ([MakerWorld #961911](https://makerworld.com/en/models/961911-custom-name-keyring#profileId-931954)).
-- Enhanced parametric OpenSCAD architecture, under-bridge dot fix, A1 Mini plate arrangement, and GitHub WebApp by **[tumesh007](https://github.com/tumesh007)**.
-- Font: **Chewy** by Sideshow / Squid (Apache 2.0 / Google Fonts).
+- **Model on MakerWorld**: [Parametric Custom Name Keyring #3490868](https://makerworld.com/en/models/3490868-parametric-custom-name-keyring)
+- **Live Interactive 3D WebApp**: [https://tumesh007.github.io/parametric-name-keyring/](https://tumesh007.github.io/parametric-name-keyring/)
+- **GitHub Repository**: [tumesh007/parametric-name-keyring](https://github.com/tumesh007/parametric-name-keyring)
+- **Author**: [tumesh007](https://github.com/tumesh007)
+- **Font**: **Chewy** by Sideshow / Squid (Apache 2.0 / Google Fonts).
