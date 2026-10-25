@@ -37,7 +37,6 @@
             height: 100vh;
             display: flex;
         }
-        /* Left Sidebar Controls */
         #sidebar {
             width: 380px;
             background: var(--bg-panel);
@@ -172,7 +171,6 @@
             transform: scale(1.15);
             border-color: #fff;
         }
-        /* Action Footer */
         .footer {
             padding: 16px 20px;
             border-top: 1px solid var(--border);
@@ -213,7 +211,6 @@
         .btn-secondary:hover {
             background: #30363d;
         }
-        /* 3D Viewport */
         #viewport-container {
             flex: 1;
             position: relative;
@@ -224,7 +221,6 @@
             height: 100%;
             display: block;
         }
-        /* Overlay Stats */
         .overlay-stats {
             position: absolute;
             top: 16px;
@@ -428,7 +424,6 @@
         let scene, camera, renderer, controls, keyringGroup, bedGroup;
         let activeColor = 0xe5b81a;
 
-        // Initialize Three.js Scene
         function init3D() {
             const container = document.getElementById('viewport-container');
             const canvas = document.getElementById('canvas3d');
@@ -448,7 +443,7 @@
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.target.set(0, 0, 4);
-            controls.maxPolarAngle = Math.PI / 2 + 0.05; // don't go below floor
+            controls.maxPolarAngle = Math.PI / 2 + 0.05;
 
             // Lighting
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
@@ -479,7 +474,6 @@
         function createBed() {
             while (bedGroup.children.length > 0) bedGroup.remove(bedGroup.children[0]);
 
-            // A1 Mini 180 x 180 mm plate
             const bedGeo = new THREE.PlaneGeometry(180, 180);
             const bedMat = new THREE.MeshStandardMaterial({ color: 0x1f232b, roughness: 0.8, metalness: 0.1 });
             const bedMesh = new THREE.Mesh(bedGeo, bedMat);
@@ -487,13 +481,11 @@
             bedMesh.receiveShadow = true;
             bedGroup.add(bedMesh);
 
-            // Grid lines
             const grid = new THREE.GridHelper(180, 18, 0x3d4450, 0x2b303c);
             grid.rotation.x = Math.PI / 2;
             grid.position.z = 0;
             bedGroup.add(grid);
 
-            // Border line
             const edges = new THREE.EdgesGeometry(bedGeo);
             const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x00ae42, linewidth: 2 }));
             bedGroup.add(line);
@@ -573,19 +565,30 @@
 
                 // OpenType glyph path to Three.js Shape
                 const path = chewyFont.getPath(char, 0, 0, fontSize);
+                const glyphBox = path.getBoundingBox();
+                const glyphCenterX = (glyphBox.x1 + glyphBox.x2) / 2;
+                const glyphCenterY = -7.0; // Centers baseline at Y=0 matching OpenSCAD
+
                 const shapePath = new THREE.ShapePath();
 
                 path.commands.forEach(cmd => {
-                    if (cmd.type === 'M') shapePath.moveTo(cmd.x, cmd.y);
-                    else if (cmd.type === 'L') shapePath.lineTo(cmd.x, cmd.y);
-                    else if (cmd.type === 'Q') shapePath.quadraticCurveTo(cmd.x1, cmd.y1, cmd.x, cmd.y);
-                    else if (cmd.type === 'C') shapePath.bezierCurveTo(cmd.x1, cmd.y1, cmd.x2, cmd.y2, cmd.x, cmd.y);
-                    else if (cmd.type === 'Z') shapePath.closePath();
+                    const x = (cmd.x !== undefined) ? (cmd.x - glyphCenterX) : 0;
+                    const y = (cmd.y !== undefined) ? (-cmd.y + glyphCenterY) : 0;
+                    const x1 = (cmd.x1 !== undefined) ? (cmd.x1 - glyphCenterX) : 0;
+                    const y1 = (cmd.y1 !== undefined) ? (-cmd.y1 + glyphCenterY) : 0;
+                    const x2 = (cmd.x2 !== undefined) ? (cmd.x2 - glyphCenterX) : 0;
+                    const y2 = (cmd.y2 !== undefined) ? (-cmd.y2 + glyphCenterY) : 0;
+
+                    if (cmd.type === 'M') shapePath.moveTo(x, y);
+                    else if (cmd.type === 'L') shapePath.lineTo(x, y);
+                    else if (cmd.type === 'Q') shapePath.quadraticCurveTo(x1, y1, x, y);
+                    else if (cmd.type === 'C') shapePath.bezierCurveTo(x1, y1, x2, y2, x, y);
+                    // cmd.type === 'Z' handled automatically by shapePath.toShapes()
                 });
 
                 const shapes = shapePath.toShapes(true);
                 shapes.forEach(shape => {
-                    const geom = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false, curveSegments: 24 });
+                    const geom = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false, curveSegments: 20 });
                     
                     // Apply Helical Twist
                     const pos = geom.attributes.position;
@@ -613,7 +616,7 @@
                     const bridgeTwist = twistRad * (bridgePct / 100);
                     const bShape = new THREE.Shape();
                     const bx = -1.2, bw = 2.4;
-                    const by = (char === 'i' ? 6.5 : 11.0), bh = 4.0;
+                    const by = (char === 'i' ? -0.5 : 3.5), bh = 3.5;
                     bShape.moveTo(bx, by);
                     bShape.lineTo(bx + bw, by);
                     bShape.lineTo(bx + bw, by + bh);
@@ -647,7 +650,7 @@
                 loopHole.absarc(0, 0, 5, 0, Math.PI * 2, true);
                 loopShape.holes.push(loopHole);
 
-                const loopGeom = new THREE.ExtrudeGeometry(loopShape, { depth: 3.0, bevelEnabled: false, curveSegments: 32 });
+                const loopGeom = new THREE.ExtrudeGeometry(loopShape, { depth: 3.0, bevelEnabled: false, curveSegments: 24 });
                 loopGeom.computeVertexNormals();
                 const loopMesh = new THREE.Mesh(loopGeom, loopMaterial);
                 loopMesh.position.set(loopX, 0, 0);
@@ -753,8 +756,8 @@ twist = ${twistDeg};
 
         // Load Chewy Font from Base64
         init3D();
-        const fontArrayBuffer = Uint8Array.from(atob(CHEWY_B64), c => c.charCodeAt(0)).buffer;
         try {
+            const fontArrayBuffer = Uint8Array.from(atob(CHEWY_B64), c => c.charCodeAt(0)).buffer;
             chewyFont = opentype.parse(fontArrayBuffer);
             document.getElementById('loading-overlay').style.opacity = '0';
             setTimeout(() => {
