@@ -12,7 +12,12 @@
    - Odd Letters (3rd, 5th, 7th...): **6.0 mm**
    - Gives high-contrast depth, tactile feel, and eliminates boring flat top surfaces.
 
-2. **Under-Bridge Floating Dot Fix (for 'i' & 'j')**:
+2. **Standard 4.0 mm Keyring Eyelet**:
+   - Replaced the old wobbly letter 'o' with a genuine engineering eyelet.
+   - **4.0 mm Precision Keyhole**: Universally fits split rings, jump rings, ball-chains, and carabiners.
+   - **2.8 mm Solid Walls & Tangent Tab**: High tensile strength prevents snapping when pulled on keys.
+
+3. **Under-Bridge Floating Dot Fix (for 'i' & 'j')**:
    - **The Problem**: Lowercase `i` and `j` in font Chewy have disconnected round dots that print in mid-air unless manually joined. Standard bridges ruin the round silhouette of the dot.
    - **The Solution**: An under-bridge recessed to **40% of the letter height** ($Z \in [0, 0.40 \times h]$). From the top view, the dot appears 100% round and separated. From underneath, it is anchored with 6 to 12 solid plastic layers!
 

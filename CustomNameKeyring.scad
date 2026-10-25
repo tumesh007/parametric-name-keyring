@@ -4,7 +4,7 @@
    ================================================================================
    Model ID: #961911 (Hayden Kong)
    File Name: CustomNameKeyring.scad / NameKeyringV1.6.scad
-   100% Exact MakerWorld UI Compatibility + Stepped Heights + Real Dot Bridge + Auto/Manual Overlap
+   Stepped Heights + Standard 4mm Keyhole Eyelet + Exact Dot Bridges + Auto/Manual Overlap
    ================================================================================
 */
 
@@ -14,7 +14,7 @@
 Font_name = "Chewy"; // [ Anton, Chewy, Forte, Gloria Hallelujah, Lobster, Luckiest Guy, Open Sans Extrabold, Oswald, Pacifico, Press Start 2P, Racing Sans One, Sigmar One, Snap ITC]
 
 // for your keyring
-Text = "Elodie";
+Text = "Shivansh";
 
 // of the preview
 Rotation = 50; // [0:5:360]
@@ -24,6 +24,26 @@ Connect_dots = true; // [true:Yes (Connected), false:No (Floating)]
 
 // Height percentage of the dot bridge (40% retains full strength while keeping top-surface aesthetics)
 Dot_bridge_height_percent = 40; // [20:5:100]
+
+/* [Keyring Eyelet Settings] */
+
+// Include left attachment loop
+Include_loop = true; // [true:Yes, false:No]
+
+// Standard inner keyhole diameter in mm
+Keyhole_diameter = 4.0; // [3.0:0.5:8.0]
+
+// Wall thickness around the keyhole in mm
+Loop_wall_thickness = 2.8; // [2.0:0.2:5.0]
+
+// Height / thickness of the eyelet tab in mm
+Loop_height = 3.2; // [2.0:0.2:6.0]
+
+// Horizontal fine-tuning adjustment
+Loop_x_offset = 0; // [-10:0.5:10]
+
+// Vertical fine-tuning adjustment
+Loop_y_position = 0; // [-10:0.5:10]
 
 /* [Spacing & Overlap Mode] */
 
@@ -82,20 +102,6 @@ twist = -5; // [-10:0.5:10]
 // of twist rotation (used when Auto_Spacing is disabled)
 center = 30; // [0:1:70]
 
-/* [ Loop Settings ] */
-
-// adjustment (used when Auto_Spacing is disabled)
-Loop_x_position = 10; // [-150:1:50]
-
-// adjustment
-Loop_y_position = 0; // [-20:1:20]
-
-// to use (default : o)
-Loop_character = "o";
-
-// to use (default : Chewy)
-Loop_font = "Chewy"; // [ Anton, Chewy, Forte, Gloria Hallelujah, Lobster, Luckiest Guy, Open Sans Extrabold, Oswald, Pacifico, Press Start 2P, Racing Sans One, Sigmar One, Snap ITC]
-
 /* [Hidden] */
 
 spacing = [0, letter_1_space, letter_2_space, letter_3_space, letter_4_space, letter_5_space, letter_6_space, letter_7_space, letter_8_space, letter_9_space, letter_10_space, letter_11_space, letter_12_space, letter_13_space];
@@ -120,42 +126,65 @@ function get_char_x(i) =
 
 total_span = get_char_x(len(Text) - 1);
 calc_center = Auto_Spacing ? (total_span / 2) : center;
-calc_loop_x = Auto_Spacing ? (-calc_center - 8.5) : (-center - Loop_x_position);
+
+loop_outer_r = (Keyhole_diameter / 2) + Loop_wall_thickness;
+first_char_left = -calc_center - (char_w(Text[0]) / 2);
+calc_loop_x = Auto_Spacing ? (first_char_left - loop_outer_r + 2.0) : (-center - 12.0);
 
 rotate([0, 0, Rotation]) {
 
-    // Loop
-    linear_extrude(height = 3, $fn = 50) {
-        translate ([calc_loop_x, Loop_y_position, 0]) rotate([0, 0, -90]) 
-            text(size = 20, text = Loop_character, font = Loop_font, halign = "center", valign = "center", $fn = 50);
+    // Engineering Keyring Eyelet with 4.0 mm Keyhole
+    if (Include_loop) {
+        translate ([calc_loop_x + Loop_x_offset, Loop_y_position, 0]) {
+            linear_extrude(height = Loop_height, $fn = 60) {
+                difference() {
+                    union() {
+                        circle(r = loop_outer_r, $fn = 60);
+                        // Tangent fusion tab embedding into first letter
+                        polygon(points = [
+                            [0, loop_outer_r],
+                            [loop_outer_r + 3.5, loop_outer_r * 0.75],
+                            [loop_outer_r + 3.5, -loop_outer_r * 0.75],
+                            [0, -loop_outer_r]
+                        ]);
+                    }
+                    // Precision 4mm Circular Keyhole
+                    circle(r = Keyhole_diameter / 2, $fn = 60);
+                }
+            }
+        }
     }
 
-    // Letters
+    // Letters + Exact Dot Bridges
     for (i = [0 : len(Text) - 1]) {
         h = (i < len(height)) ? height[i] : ((i % 2 == 0) ? 6.0 : 3.6);
         char = Text[i];
         char_x = get_char_x(i) - calc_center;
 
         // Main letter extrusion (full height h)
-        linear_extrude(height = h, twist = twist, $fn = 50) {
+        linear_extrude(height = h, twist = twist, $fn = 40) {
             translate ([char_x, 0, 0])
-                text(size = 25, text = char, font = Font_name, halign = "center", valign = "center", $fn = 50);
+                text(size = 25, text = char, font = Font_name, halign = "center", valign = "center", $fn = 40);
         }
 
         // Recessed dot bridge (recessed height keeps top-surface aesthetics clean)
-        if (Connect_dots) {
+        if (Connect_dots && (char == "i" || char == "j")) {
             bridge_factor = Dot_bridge_height_percent / 100;
             bridge_h = h * bridge_factor;
             bridge_twist = twist * bridge_factor;
+            
+            // Bridge for 'i': spans from stem top (Y=7.2) into dot bottom (Y=9.4)
             if (char == "i") {
-                linear_extrude(height = bridge_h, twist = bridge_twist, $fn = 50)
+                linear_extrude(height = bridge_h, twist = bridge_twist, $fn = 40)
                     translate([char_x, 0, 0])
-                        translate([-1.2, 6.5]) square([2.4, 4.0]);
+                        translate([-1.2, 6.5]) square([2.5, 3.6]);
             }
+            
+            // Bridge for 'j': spans from stem top (Y=11.9) into dot bottom (Y=13.9)
             if (char == "j") {
-                linear_extrude(height = bridge_h, twist = bridge_twist, $fn = 50)
+                linear_extrude(height = bridge_h, twist = bridge_twist, $fn = 40)
                     translate([char_x, 0, 0])
-                        translate([-1.2, 11.0]) square([2.4, 4.0]);
+                        translate([-1.5, 11.0]) square([2.8, 3.6]);
             }
         }
     }

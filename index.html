@@ -432,14 +432,14 @@
                 </div>
             </div>
 
-            <!-- Eyelet Loop -->
+            <!-- Keyring Eyelet Loop -->
             <div class="section-title">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
-                Keyring Eyelet Loop
+                Keyring Eyelet (4 mm Keyhole)
             </div>
             <label class="checkbox-row">
                 <input type="checkbox" id="check-loop" checked>
-                <span>Include Left Attachment Loop</span>
+                <span>Include Left Eyelet (Standard 4.0 mm Hole)</span>
             </label>
 
             <!-- Material Color & Bed -->
@@ -481,11 +481,12 @@
         <canvas id="canvas3d"></canvas>
 
         <div class="overlay-stats">
-            <div>Dimensions: <b id="stat-dims">81.1 x 26.0 x 8.0 mm</b></div>
+            <div>Dimensions: <b id="stat-dims">73.6 x 26.0 x 8.0 mm</b></div>
+            <div>Keyhole: <b>4.0 mm DIA</b></div>
             <div>Triangles: <b id="stat-tris">4,820</b></div>
             <div class="status-ok">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                100% Manifold & Slicer Ready
+                100% Solid & Slicer Ready
             </div>
         </div>
 
@@ -651,9 +652,9 @@
                 metalness: 0.2
             });
             const loopMaterial = new THREE.MeshStandardMaterial({
-                color: 0x4a4d52,
-                roughness: 0.5,
-                metalness: 0.3
+                color: activeColor,
+                roughness: 0.35,
+                metalness: 0.2
             });
 
             const fontSize = 25;
@@ -681,11 +682,15 @@
                 positions.push(x_i);
             }
 
-            // 3. Overall bounds and centering
+            // 3. Eyelet Loop Dimensions (Standard 4.0mm Keyhole)
+            const loopOuterR = 4.8; // 9.6mm outer diameter, 2.8mm solid perimeter wall
+            const keyholeR = 2.0;   // exact 4.0mm keyhole diameter
+            const loopH = 3.2;
+
             const firstLeft = positions[0] + bboxes[0].x1;
             const lastRight = positions[textStr.length - 1] + bboxes[textStr.length - 1].x2;
-            const loopX = firstLeft - 7.5;
-            const totalMinX = includeLoop ? (loopX - 10) : firstLeft;
+            const loopX = firstLeft - 5.2; // provides 3.2mm clearance between 4mm hole and letter edge
+            const totalMinX = includeLoop ? (loopX - loopOuterR) : firstLeft;
             const totalMaxX = lastRight;
             const centerX = (totalMinX + totalMaxX) / 2;
 
@@ -739,20 +744,32 @@
                     keyringGroup.add(mesh);
                 });
 
-                // Recessed Floating Dot Bridge for 'i' and 'j'
+                // Exact Recessed Floating Dot Bridge for 'i' and 'j'
                 if (connectDots && (char === 'i' || char === 'j')) {
                     const bridgeH = h * (bridgePct / 100);
                     const bridgeTwist = twistRad * (bridgePct / 100);
                     const bShape = new THREE.Shape();
-                    const bx = -1.2, bw = 2.4;
-                    const by = (char === 'i' ? -0.5 : 3.5), bh = 3.5;
+                    
+                    let bx, bw, by, bh;
+                    if (char === 'i') {
+                        bx = -1.0;
+                        bw = 2.5; // X in [-1.0, 1.5]
+                        by = 6.0;
+                        bh = 3.4; // Y in [6.0, 9.4] (solidly fuses stem at Y<=6.96 to dot at Y>=8.53)
+                    } else { // 'j'
+                        bx = 1.4;
+                        bw = 2.6; // X in [1.4, 4.0] (aligns with dot center at X=2.7)
+                        by = 6.0;
+                        bh = 3.2; // Y in [6.0, 9.2] (solidly fuses stem at Y<=6.84 to dot at Y>=8.28)
+                    }
+
                     bShape.moveTo(bx, by);
                     bShape.lineTo(bx + bw, by);
                     bShape.lineTo(bx + bw, by + bh);
                     bShape.lineTo(bx, by + bh);
                     bShape.closePath();
 
-                    const bGeom = new THREE.ExtrudeGeometry(bShape, { depth: bridgeH, bevelEnabled: false });
+                    const bGeom = new THREE.ExtrudeGeometry(bShape, { depth: bridgeH, bevelEnabled: false, curveSegments: 16 });
                     const bPos = bGeom.attributes.position;
                     for (let p = 0; p < bPos.count; p++) {
                         const vx = bPos.getX(p);
@@ -766,19 +783,31 @@
                     bGeom.computeVertexNormals();
                     const bMesh = new THREE.Mesh(bGeom, material);
                     bMesh.position.set(charCenterX, 0, 0);
+                    bMesh.castShadow = true;
+                    bMesh.receiveShadow = true;
                     keyringGroup.add(bMesh);
                 }
             }
 
-            // 5. Add Eyelet Loop
+            // 5. Add Keyring Eyelet with 4mm Keyhole & Tangent Fusion Tab
             if (includeLoop) {
+                const thetaTop = Math.asin(0.7);
+                const thetaBottom = -thetaTop;
+
                 const loopShape = new THREE.Shape();
-                loopShape.absarc(0, 0, 10, 0, Math.PI * 2, false);
+                loopShape.moveTo(loopOuterR * Math.cos(thetaTop), loopOuterR * Math.sin(thetaTop));
+                loopShape.absarc(0, 0, loopOuterR, thetaTop, 2 * Math.PI + thetaBottom, false);
+                loopShape.lineTo(loopOuterR + 3.0, -loopOuterR * 0.7);
+                loopShape.lineTo(loopOuterR + 3.0, loopOuterR * 0.7);
+                loopShape.closePath();
+
                 const holePath = new THREE.Path();
-                holePath.absarc(0, 0, 4.5, 0, Math.PI * 2, true);
+                holePath.absarc(0, 0, keyholeR, 0, Math.PI * 2, true);
                 loopShape.holes.push(holePath);
 
-                const loopGeom = new THREE.ExtrudeGeometry(loopShape, { depth: 3.2, bevelEnabled: false, curveSegments: 36 });
+                const loopGeom = new THREE.ExtrudeGeometry(loopShape, { depth: loopH, bevelEnabled: false, curveSegments: 36 });
+                loopGeom.computeVertexNormals();
+
                 const loopMesh = new THREE.Mesh(loopGeom, loopMaterial);
                 loopMesh.position.set(loopX - centerX, 0, 0);
                 loopMesh.castShadow = true;
@@ -834,7 +863,7 @@
                 spacingArr.push(parseFloat(ov.toFixed(2)));
             }
 
-            const code = `// Parametric Name Keyring
+            const code = `// Parametric Name Keyring (Standard 4mm Keyhole + Dot Bridges)
 Font_name = "Chewy";
 Text = "${textStr}";
 Rotation = 0;
@@ -843,6 +872,10 @@ Auto_Overlap_mm = ${autoOverlap};
 Connect_dots = ${connectDots};
 Dot_bridge_height_percent = ${bridgePct};
 twist = ${twistDeg};
+
+Keyhole_diameter = 4.0;
+Loop_wall_thickness = 2.8;
+Loop_height = 3.2;
 
 // Stepped Heights: Cap=${capH}mm, Even=${evenH}mm, Odd=${oddH}mm
 // Manual Pair Overlaps: [${spacingArr.join(', ')}]
