@@ -48,7 +48,7 @@ module single_keyring(text_str, loop_x_off = 0, loop_y_off = 0) {
     calc_loop_x = first_char_left - loop_outer_r + 2.0;
     loop_x = calc_loop_x + loop_x_off;
     loop_y = loop_y_off;
-    tab_reach = max(loop_outer_r + 3.0, (first_char_left - loop_x) + 2.5);
+    tab_reach = max(loop_outer_r + 4.0, (first_char_left - loop_x) + 6.0);
 
     union() {
         // Engineering 4mm Keyhole Eyelet
@@ -109,7 +109,7 @@ if ($preview && Show_Bed_Outline) {
 // Placed Keyrings on Build Plate (Scale 0.88x)
 scale([Scale, Scale, Scale]) {
     // Left Column (X = -42 mm)
-    translate([-42.0 / Scale,  64.0 / Scale, 0]) single_keyring("Shivansh");
+    translate([-42.0 / Scale,  64.0 / Scale, 0]) single_keyring("Shivansh", loop_x_off = 3.0); // Inward fusion uniting S and h
     translate([-42.0 / Scale,  32.0 / Scale, 0]) single_keyring("Tumesh", loop_x_off = 3.0); // Inward fusion uniting T and u
     translate([-42.0 / Scale,   0.0 / Scale, 0]) single_keyring("Luvish");
     translate([-42.0 / Scale, -32.0 / Scale, 0]) single_keyring("Pulkit");

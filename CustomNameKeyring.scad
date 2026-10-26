@@ -135,7 +135,7 @@ loop_x = calc_loop_x + Loop_x_offset;
 loop_y = Loop_y_offset;
 
 // Dynamic tab reach ensuring solid penetration into the first letter
-tab_reach = max(loop_outer_r + 3.0, (first_char_left - loop_x) + 2.5);
+tab_reach = max(loop_outer_r + 4.0, (first_char_left - loop_x) + 6.0);
 
 rotate([0, 0, Rotation]) {
 
