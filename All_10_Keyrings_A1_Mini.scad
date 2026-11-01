@@ -33,9 +33,26 @@ function char_w(c) =
     (c >= "A" && c <= "Z") ? 14.0 :
     10.5;
 
+function get_pair_kerning(c1, c2) =
+    (c1 == "o" && c2 == "j") ? 3.1 :
+    (c1 == "T" && c2 == "u") ? 5.7 :
+    (c1 == "e" && c2 == "s") ? 7.4 :
+    (c1 == "h" && c2 == "i") ? 6.0 :
+    (c1 == "u" && c2 == "l") ? 6.2 :
+    (c1 == "k" && c2 == "i") ? 5.4 :
+    (c1 == "a" && c2 == "l") ? 6.1 :
+    (c1 == "l" && c2 == "i") ? 2.7 :
+    (c1 == "i" && c2 == "s") ? 4.3 :
+    (c1 == "v" && c2 == "i") ? 6.3 :
+    (c1 == "n" && c2 == "s") ? 7.0 :
+    (c1 == "N" && c2 == "a") ? 10.6 :
+    (c1 == "V" && c2 == "a") ? 8.8 :
+    0;
+
 function get_step_at(text, i) = 
     (i <= 0) ? 0 :
-    (((char_w(text[i-1]) + char_w(text[i])) / 2) - 1.8);
+    (get_pair_kerning(text[i-1], text[i]) > 0 ? get_pair_kerning(text[i-1], text[i]) :
+    (((char_w(text[i-1]) + char_w(text[i])) / 2) - 1.8));
 
 function get_char_x_auto(text, i) = 
     (i <= 0) ? 0 : (get_char_x_auto(text, i - 1) + get_step_at(text, i));

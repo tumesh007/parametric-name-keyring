@@ -115,10 +115,27 @@ function char_w(c) =
     (c >= "A" && c <= "Z") ? 14.0 :
     10.5;
 
+function get_pair_kerning(c1, c2) =
+    (c1 == "o" && c2 == "j") ? 3.1 :
+    (c1 == "T" && c2 == "u") ? 5.7 :
+    (c1 == "e" && c2 == "s") ? 7.4 :
+    (c1 == "h" && c2 == "i") ? 6.0 :
+    (c1 == "u" && c2 == "l") ? 6.2 :
+    (c1 == "k" && c2 == "i") ? 5.4 :
+    (c1 == "a" && c2 == "l") ? 6.1 :
+    (c1 == "l" && c2 == "i") ? 2.7 :
+    (c1 == "i" && c2 == "s") ? 4.3 :
+    (c1 == "v" && c2 == "i") ? 6.3 :
+    (c1 == "n" && c2 == "s") ? 7.0 :
+    (c1 == "N" && c2 == "a") ? 10.6 :
+    (c1 == "V" && c2 == "a") ? 8.8 :
+    0;
+
 function get_step(i) =
     (i <= 0) ? 0 :
     (Auto_Spacing ?
-        (((char_w(Text[i-1]) + char_w(Text[i])) / 2) - Auto_Overlap_mm) :
+        (get_pair_kerning(Text[i-1], Text[i]) > 0 ? get_pair_kerning(Text[i-1], Text[i]) :
+        (((char_w(Text[i-1]) + char_w(Text[i])) / 2) - Auto_Overlap_mm)) :
         ((i < len(spacing)) ? spacing[i] : 8.5));
 
 function get_char_x(i) =
