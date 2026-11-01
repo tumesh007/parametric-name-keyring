@@ -687,7 +687,22 @@
                 const localCenterX = (glyphBox.x1 + glyphBox.x2) / 2;
                 const glyphCenterY = -7.0;
 
-                const shapes = charProfiles[i].shapes;
+                const shapePath = new THREE.ShapePath();
+                path.commands.forEach(cmd => {
+                    const x = (cmd.x !== undefined) ? (cmd.x - localCenterX) : 0;
+                    const y = (cmd.y !== undefined) ? (-cmd.y + glyphCenterY) : 0;
+                    const x1 = (cmd.x1 !== undefined) ? (cmd.x1 - localCenterX) : 0;
+                    const y1 = (cmd.y1 !== undefined) ? (-cmd.y1 + glyphCenterY) : 0;
+                    const x2 = (cmd.x2 !== undefined) ? (cmd.x2 - localCenterX) : 0;
+                    const y2 = (cmd.y2 !== undefined) ? (-cmd.y2 + glyphCenterY) : 0;
+
+                    if (cmd.type === 'M') shapePath.moveTo(x, y);
+                    else if (cmd.type === 'L') shapePath.lineTo(x, y);
+                    else if (cmd.type === 'Q') shapePath.quadraticCurveTo(x1, y1, x, y);
+                    else if (cmd.type === 'C') shapePath.bezierCurveTo(x1, y1, x2, y2, x, y);
+                });
+
+                const shapes = shapePath.toShapes(false);
                 const allPts = [];
                 shapes.forEach(shape => {
                     const pts = shape.getPoints(80);
@@ -755,8 +770,6 @@
             const keyholeR = 2.0;   // exact 4.0mm keyhole diameter
             const loopH = 3.2;
 
-            const firstLeft = positions[0] + bboxes[0].x1;
-            const lastRight = positions[textStr.length - 1] + bboxes[textStr.length - 1].x2;
             const loopX = firstLeft - 5.2 + loopOffsetX;
             const loopY = loopOffsetY;
 
@@ -769,28 +782,7 @@
                 const char = textStr[i];
                 const charCenterX = positions[i] - centerX;
                 const h = (i === 0) ? capH : ((i % 2 === 0) ? oddH : evenH);
-
-                const path = chewyFont.getPath(char, 0, 0, fontSize);
-                const glyphBox = path.getBoundingBox();
-                const localCenterX = (glyphBox.x1 + glyphBox.x2) / 2;
-                const glyphCenterY = -7.0; // Center baseline around Y=0
-
-                const shapePath = new THREE.ShapePath();
-                path.commands.forEach(cmd => {
-                    const x = (cmd.x !== undefined) ? (cmd.x - localCenterX) : 0;
-                    const y = (cmd.y !== undefined) ? (-cmd.y + glyphCenterY) : 0;
-                    const x1 = (cmd.x1 !== undefined) ? (cmd.x1 - localCenterX) : 0;
-                    const y1 = (cmd.y1 !== undefined) ? (-cmd.y1 + glyphCenterY) : 0;
-                    const x2 = (cmd.x2 !== undefined) ? (cmd.x2 - localCenterX) : 0;
-                    const y2 = (cmd.y2 !== undefined) ? (-cmd.y2 + glyphCenterY) : 0;
-
-                    if (cmd.type === 'M') shapePath.moveTo(x, y);
-                    else if (cmd.type === 'L') shapePath.lineTo(x, y);
-                    else if (cmd.type === 'Q') shapePath.quadraticCurveTo(x1, y1, x, y);
-                    else if (cmd.type === 'C') shapePath.bezierCurveTo(x1, y1, x2, y2, x, y);
-                });
-
-                const shapes = shapePath.toShapes(false);
+                const shapes = charProfiles[i].shapes;
                 shapes.forEach(shape => {
                     const geom = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false, curveSegments: 20 });
                     
