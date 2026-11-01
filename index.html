@@ -741,7 +741,7 @@
                     else if (cmd.type === 'C') shapePath.bezierCurveTo(x1, y1, x2, y2, x, y);
                 });
 
-                const shapes = shapePath.toShapes(true);
+                const shapes = shapePath.toShapes(false);
                 shapes.forEach(shape => {
                     const geom = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false, curveSegments: 20 });
                     
@@ -816,7 +816,9 @@
                 const thetaBottom = -thetaTop;
 
                 // Ensure tab reach dynamically connects from loopX into first letter
-                const tabReachX = Math.max(loopOuterR + 4.0, (firstLeft - loopX) + 6.0);
+                // Tab penetration into first letter stem (2.5mm default, 5.5mm for indented 'S')
+                const penetration = (textStr[0] === 'S') ? 5.5 : 2.5;
+                const tabReachX = Math.max(loopOuterR + 3.0, (firstLeft - loopX) + penetration);
 
                 const loopShape = new THREE.Shape();
                 loopShape.moveTo(loopOuterR * Math.cos(thetaTop), loopOuterR * Math.sin(thetaTop));
